@@ -1,5 +1,5 @@
 %Anika Wurl and Tiago Mendes Ferreira 
-%2021
+%2021-
 
 clear all
 
@@ -28,14 +28,12 @@ ps=["RPDLF_INEPT_CH2" ...        1
 pulse_seq=1;
 
 %B1 misseting
-devC=[0];%shift 13C B1 profile by constant 
-devH=[0];%shift 1H B1 profile by constant 
+devC=[0];%shift 13C B1 profile by fraction 
+devH=[0];%shift 1H B1 profile by fraction
 
 %dipole-dipole
 dip1=0.001:0.001:0.5; %heteronuclear dipole coupling C-Ha
-%dip1=[0.1]; %heteronuclear dipole coupling C-Ha
 dip1=dip1*-22000;
-%dip1=-.1*22000;
 dip2=dip1; %heteronuclear dipole coupling C-Hb
 
 dipHH=[0];%homonuclear dipole coupling Ha-Hb
@@ -54,7 +52,7 @@ gamma=1;
 maxdt=1;
 
 %MAS rate
-MAS=5150; 
+MAS=5000; 
 
 %number of points simulated and phase cycle steps
 np=128;
@@ -69,7 +67,7 @@ x=linspace(-width/2,width/2,points);
 sigmaH=[40];
 sigmaC=sigmaH;
 
-%% OUTER LOOP OVER INPUT VECTORS
+%% LOOPS OVER INPUT VECTORS
 
 for m=1:length(sigmaH)
 gaussH=exp(-(x).^2./(sigmaH(m)^2));    
