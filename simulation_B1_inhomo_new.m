@@ -4,22 +4,10 @@
 clear all
 
 %% PULSE SEQUENCES
-%1 RPDLF with INEPT for CH2 (l1=9)
-%2 RPDLF_CH2 (l1=9)
-%3 RPDLF_CH2 no propagator (l1=2)
-%4 CP for CH
-%5 INEPT for CH2
-%6 DROSS with INEPT for CH
-%7 SDROSS with INEPT for CH
+%1 RPDLF with rINEPT for CH2 (l1=9)
 
 ps=["RPDLF_INEPT_CH2" ...        1
-         "RPDLF_CH2" ...         2
-         "RPDLF_CP_CH2" ...      3
-         "RPDLF_CH2_noprop" ...  4
-         "CP_CH2" ...            5
-         "INEPT_CH2" ...         6
-         "DROSS_CH" ...          7
-         "SDROSS_CH"];...        8
+                    ];... 
               
 
 %% INPUTS
@@ -32,7 +20,7 @@ devC=[0];%shift 13C B1 profile by fraction
 devH=[0];%shift 1H B1 profile by fraction
 
 %dipole-dipole
-dip1=0.001:0.001:0.5; %heteronuclear dipole coupling C-Ha
+dip1=0.25:0.001:0.5; %heteronuclear dipole coupling C-Ha
 dip1=dip1*-22000;
 dip2=dip1; %heteronuclear dipole coupling C-Hb
 
@@ -47,8 +35,8 @@ shiftH=[0]; %1H offset in ppm
 shiftC=0; %13C offset in ppm
 
 %repulsion file and number of gamma angles
-rep=2000;
-gamma=1;
+rep=320;
+gamma=6;
 maxdt=1;
 
 %MAS rate
@@ -59,7 +47,7 @@ np=128;
 phasecycle=1;
 
 %gaussian B1 inhomogeneity (points=1 is no inhomogeneity)
-points=40;
+points=[40];
 width=40;
 x=linspace(-width/2,width/2,points);
 
@@ -68,7 +56,6 @@ sigmaH=[40];
 sigmaC=sigmaH;
 
 %% LOOPS OVER INPUT VECTORS
-
 for m=1:length(sigmaH)
 gaussH=exp(-(x).^2./(sigmaH(m)^2));    
 for mm=1:length(devC)
@@ -111,7 +98,7 @@ for i=1:size(acc,2)
 end
 cd ..
 
-%%  PROCESSING OF SIMULATED DATA 
+%%  PROCESSING/PLOTTING SIMULATED DATA 
 % commented lines for figures/checks 
 
 t1=TDarray(:,1);
@@ -125,19 +112,20 @@ for i=1:size(TDarray,2)-1
 end
 
 % Fourier Transform 
-lb2=1;
-si2 = np;  
-Stemp = S/S(1);
-Stempplot = S;
-Stemp(1) = 0.5*Stemp(1);       
-swh2 = 1/(t1(2)-t1(1));
-si2=length(t1)+1;
-nu2 = swh2/2*linspace(-1, 1, si2);
-Itemp = fftshift(fft(Stemp,si2));
+%lb2=1;
+%si2 = np*10;  
+%Stemp = S/S(1);
+%Stemp(1) = 0.5*Stemp(1);       
+%swh2 = 1/(t1(2)-t1(1));
+%si2=length(t1)+1;
+%nu2 = swh2/2*linspace(-1, 1, si2);
+%Itemp = fftshift(fft(Stemp,si2));
 
-figure(1), 
-subplot(2,1,1), plot(t1,Stempplot,'s-'), hold on
-subplot(2,1,2), plot(nu2,real(Itemp),'-o'), hold on
+%figure(1), clf
+%subplot(2,1,1), plot(t1,Stemp,'s-'), hold on
+%ylim([-0.6 1.1])
+%subplot(2,1,2), plot(nu2,real(Itemp),'-'), hold on
+%ylim([-1 4])
 
 
 
@@ -177,7 +165,7 @@ eval(['save model_gauss_width_' num2str(width) '_points_' num2str(points) ...
     '_rep' num2str(rep) ...
     '_gamma_' num2str(gamma) ...
     '_MAS_' num2str(MAS) ...
-    ' t1 S omega Itemp nu2 Stemp'])
+    ' t1 S'])
 
 else
     
@@ -191,7 +179,7 @@ eval(['save model_ideal_dip1_' num2str(round(dip1(nnnn))) '_dip2_' num2str(round
     '_rep' num2str(rep) ...
     '_gamma_' num2str(gamma) ...
     '_MAS_' num2str(MAS) ...
-    ' t1 S omega Itemp nu2 Stemp'])
+    ' t1 S'])
     
 end
 cd ../..
